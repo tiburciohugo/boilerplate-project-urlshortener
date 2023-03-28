@@ -22,13 +22,15 @@ app.get("/api/hello", function (req, res) {
 });
 
 const urls = [];
+const shortUrls = [];
 
 // URL Shortener
 app.get("/api/shorturl/:shorturl", (req, res, next) => {
-  const shortUrl = req.params.shorturl;
-  const originalUrl = urls[parseInt(shortUrl) - 1];
+  const shortUrl = parseInt(req.params.shorturl);
+  const originalUrlIndex = shortUrls.indexOf(shortUrl);
 
-  if (originalUrl) {
+  if (originalUrlIndex >= 0) {
+    const originalUrl = urls[originalUrlIndex];
     res.redirect(originalUrl);
   } else {
     res.status(404).json({ error: "Short URL not found" });
@@ -49,8 +51,10 @@ app.post("/api/shorturl", function (req, res) {
     if (err) {
       res.json({ error: "invalid URL" });
     } else {
-      const shortUrl = (urls.length + 1).toString();
+      const shortUrl = urls.length;
       urls.push(url);
+      shortUrls.push(shortUrl);
+      console.log(urls, shortUrls);
       res.json({ original_url: url, short_url: shortUrl });
     }
   });
