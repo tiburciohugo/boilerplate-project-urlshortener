@@ -41,6 +41,11 @@ app.get("/api/shorturl/:url", (req, res, next) => {
 
 app.post("/api/shorturl", function (req, res) {
   const { url } = req.body;
+
+  if (!url || url.trim() === "") {
+    return res.status(400).json({ error: "a URL is required" });
+  }
+
   const regex = /^https?:\/\//;
   const urlWithoutProtocol = url.replace(regex, "").replace(/\/$/, "");
 
