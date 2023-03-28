@@ -2,19 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const bodyParser = require("body-parser");
 const dns = require("dns");
-const url = require("url");
-const baseUrl = "http://localhost:3000";
-
-const Url = url.URL;
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/public", express.static(`${process.cwd()}/public`));
 
@@ -27,10 +21,12 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
+const urls = [];
+
 // URL Shortener
-app.get("/api/shorturl/:short_url", (req, res, next) => {
-  const shortUrl = req.params.url;
-  const originalUrl = urlMap.get(shortUrl);
+app.get("/api/shorturl/:shorturl", (req, res, next) => {
+  const shortUrl = req.params.shorturl;
+  const originalUrl = urls[parseInt(shortUrl) - 1];
 
   if (originalUrl) {
     res.redirect(originalUrl);
@@ -53,7 +49,10 @@ app.post("/api/shorturl", function (req, res) {
     if (err) {
       res.json({ error: "invalid URL" });
     } else {
-      res.json({ original_url: url, short_url: 1 });
+      const shortUrl = (urls.length + 1).toString();
+      urls.push(url);
+      console.log(urls);
+      res.json({ original_url: url, short_url: shortUrl });
     }
   });
 });
