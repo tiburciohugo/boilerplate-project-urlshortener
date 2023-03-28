@@ -51,7 +51,7 @@ app.post("/api/shorturl", function (req, res) {
     if (err) {
       res.json({ error: "invalid URL" });
     } else {
-      const shortUrl = urls.length;
+      const shortUrl = shortUrls.length + 1;
       urls.push(url);
       shortUrls.push(shortUrl);
       console.log(urls, shortUrls);
