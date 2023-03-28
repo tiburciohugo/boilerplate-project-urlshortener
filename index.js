@@ -28,7 +28,7 @@ app.get("/api/hello", function (req, res) {
 });
 
 // URL Shortener
-app.get("/api/shorturl/:url", (req, res, next) => {
+app.get("/api/shorturl/:short_url", (req, res, next) => {
   const shortUrl = req.params.url;
   const originalUrl = urlMap.get(shortUrl);
 
